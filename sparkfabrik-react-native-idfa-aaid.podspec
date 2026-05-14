@@ -10,12 +10,10 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "9.0" }
-  s.source       = { :git => "https://github.com/sparkfabrik/sparkfabrik-react-native-idfa-aaid.git", :tag => "#{s.version}" }
+  s.platforms    = { :ios => "13.0" }
+  s.source       = { :git => "https://github.com/aiir/react-native-idfa-aaid.git", :tag => "v#{s.version}" }
 
-  
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-  
 
-  s.dependency "React"
+  install_modules_dependencies(s)
 end

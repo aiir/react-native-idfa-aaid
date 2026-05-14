@@ -1,6 +1,6 @@
 {
   "name": "@sparkfabrik/react-native-idfa-aaid",
-  "version": "1.2.0",
+  "version": "1.2.0-aiir.1",
   "description": "React Native module to get IDFA (iOS) or AAID (Android)",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -40,7 +40,12 @@
     "aaid",
     "advertising"
   ],
-  "repository": "https://github.com/sparkfabrik/sparkfabrik-react-native-idfa-aaid",
+  "codegenConfig": {
+    "name": "ReactNativeIdfaAaidSpec",
+    "type": "modules",
+    "jsSrcsDir": "src"
+  },
+  "repository": "https://github.com/aiir/react-native-idfa-aaid",
   "author": "Edoardo Dusi <edoardo.dusi@sparkfabrik.com> (https://github.com/sparkfabrik)",
   "license": "MIT",
   "bugs": {
