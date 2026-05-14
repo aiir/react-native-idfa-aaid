@@ -5,13 +5,11 @@
 #import <ReactNativeIdfaAaidSpec/ReactNativeIdfaAaidSpec.h>
 #endif
 
-// Import the Swift-generated header. CocoaPods replaces dashes with underscores
-// in the target name, producing sparkfabrik_react_native_idfa_aaid-Swift.h.
-#if __has_include("sparkfabrik_react_native_idfa_aaid-Swift.h")
+// Direct import (no __has_include guard) so Xcode knows to compile Swift first,
+// placing the generated header in DerivedSources before ObjC++ compilation begins.
+// Header name: CocoaPods target "sparkfabrik-react-native-idfa-aaid" → module name
+// "sparkfabrik_react_native_idfa_aaid" (dashes become underscores).
 #import "sparkfabrik_react_native_idfa_aaid-Swift.h"
-#elif __has_include(<sparkfabrik_react_native_idfa_aaid/sparkfabrik_react_native_idfa_aaid-Swift.h>)
-#import <sparkfabrik_react_native_idfa_aaid/sparkfabrik_react_native_idfa_aaid-Swift.h>
-#endif
 
 @interface ReactNativeIdfaAaidModule : NSObject <
 #ifdef RCT_NEW_ARCH_ENABLED
