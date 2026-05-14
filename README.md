@@ -48,27 +48,49 @@ Add the tracking usage description to `Info.plist`:
 ```js
 import ReactNativeIdfaAaid, { AdvertisingInfoResponse } from '@sparkfabrik/react-native-idfa-aaid';
 
-useEffect(() => {
-  ReactNativeIdfaAaid.getAdvertisingInfo()
-    .then((res: AdvertisingInfoResponse) => {
-      const id = res.isAdTrackingLimited ? null : res.id;
-    })
-    .catch((err) => console.log(err));
-}, []);
+const MyComponent: React.FC = () => {
+  const [idfa, setIdfa] = useState<string | null>(null);
+
+  useEffect(() => {
+    ReactNativeIdfaAaid.getAdvertisingInfo()
+      .then((res: AdvertisingInfoResponse) =>
+        !res.isAdTrackingLimited ? setIdfa(res.id) : setIdfa(null),
+      )
+      .catch((err) => {
+        console.log(err);
+        setIdfa(null);
+      });
+  }, []);
+
+  // ...
+};
 ```
 
 ### iOS 17.4 tracking status bug
 
 iOS 17.4 has a bug where `ATTrackingManager` can return `denied` before the permission
 dialog has been shown. Use `getAdvertisingInfoAndCheckAuthorization(true)` to apply a
-workaround that re-checks when the app becomes active:
+workaround that registers an observer and re-checks when the app next becomes active:
 
 ```js
-ReactNativeIdfaAaid.getAdvertisingInfoAndCheckAuthorization(true)
-  .then((res: AdvertisingInfoResponse) => {
-    const id = res.isAdTrackingLimited ? null : res.id;
-  })
-  .catch((err) => console.log(err));
+import ReactNativeIdfaAaid, { AdvertisingInfoResponse } from '@sparkfabrik/react-native-idfa-aaid';
+
+const MyComponent: React.FC = () => {
+  const [idfa, setIdfa] = useState<string | null>(null);
+
+  useEffect(() => {
+    ReactNativeIdfaAaid.getAdvertisingInfoAndCheckAuthorization(true)
+      .then((res: AdvertisingInfoResponse) =>
+        !res.isAdTrackingLimited ? setIdfa(res.id) : setIdfa(null),
+      )
+      .catch((err) => {
+        console.log(err);
+        setIdfa(null);
+      });
+  }, []);
+
+  // ...
+};
 ```
 
 Pass `false` (or use `getAdvertisingInfo()`) if you do not need the workaround.
