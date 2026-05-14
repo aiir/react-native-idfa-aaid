@@ -5,11 +5,21 @@
 #import <ReactNativeIdfaAaidSpec/ReactNativeIdfaAaidSpec.h>
 #endif
 
-// Direct import (no __has_include guard) so Xcode knows to compile Swift first,
-// placing the generated header in DerivedSources before ObjC++ compilation begins.
-// Header name: CocoaPods target "sparkfabrik-react-native-idfa-aaid" → module name
-// "sparkfabrik_react_native_idfa_aaid" (dashes become underscores).
-#import "sparkfabrik_react_native_idfa_aaid-Swift.h"
+// Forward-declare the Swift class using its @objc-exported interface.
+// We avoid importing the Swift-generated header (-Swift.h) because CocoaPods
+// names the umbrella header "sparkfabrik-react-native-idfa-aaid-umbrella.h"
+// while the generated header tries to import it as
+// <sparkfabrik_react_native_idfa_aaid/sparkfabrik_react_native_idfa_aaid.h>,
+// which doesn't exist, causing a build error. The Swift class is registered
+// in the ObjC runtime via its @objc(ReactNativeIdfaAaid) annotation, so
+// this forward declaration is sufficient for instantiation and method dispatch.
+@interface ReactNativeIdfaAaid : NSObject
+- (void)getAdvertisingInfo:(RCTPromiseResolveBlock)resolve
+               withRejecter:(RCTPromiseRejectBlock)reject;
+- (void)getAdvertisingInfoAndCheckAuthorization:(BOOL)checkAuthorization
+                                   withResolver:(RCTPromiseResolveBlock)resolve
+                                   withRejecter:(RCTPromiseRejectBlock)reject;
+@end
 
 @interface ReactNativeIdfaAaidModule : NSObject <
 #ifdef RCT_NEW_ARCH_ENABLED
