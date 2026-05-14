@@ -3,22 +3,22 @@ import AppTrackingTransparency
 import Foundation
 
 @objc(ReactNativeIdfaAaid)
-class ReactNativeIdfaAaid: NSObject {
-  
+public class ReactNativeIdfaAaid: NSObject {
+
     @objc
-    static func requiresMainQueueSetup() -> Bool {
+    public static func requiresMainQueueSetup() -> Bool {
         return false
     }
 
     @objc(getAdvertisingInfo:withRejecter:)
-    func getAdvertisingInfo(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    public func getAdvertisingInfo(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         getAdvertisingInfoAndCheckAuthorization(false, resolve: resolve, reject: reject)
     }
 
     /// Use this to enable an additional check and prevent a iOS 17.4 bug which causes the callback to be invoked immediately with a value of `status = denied`,
     /// even though the true value of `ATTrackingManager.trackingAuthorizationStatus`` is still `notDetermined` because the user has not yet made a choice by responding to the tracking consent popup.
     @objc(getAdvertisingInfoAndCheckAuthorization:withResolver:withRejecter:)
-    func getAdvertisingInfoAndCheckAuthorization(_ checkAuthorization: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    public func getAdvertisingInfoAndCheckAuthorization(_ checkAuthorization: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization { [weak self] status in
                 switch status {
