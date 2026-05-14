@@ -1,119 +1,78 @@
-@sparkfabrik/react-native-idfa-aaid
+# react-native-idfa-aaid
 
-# React Native module to get IDFA (iOS) or AAID (Android)
+React Native module to get the Advertising Identifier (IDFA on iOS, AAID on Android).
 
-## Intro
+> **This is the [Aiir](https://www.aiir.com) fork** of the archived
+> [`@sparkfabrik/react-native-idfa-aaid`](https://github.com/sparkfabrik/sparkfabrik-react-native-idfa-aaid)
+> package. The upstream repo was archived by SparkFabrik in November 2025. We forked it to add
+> React Native New Architecture (TurboModule) support. See [CLAUDE.md](./CLAUDE.md) for
+> technical details of the changes made.
 
-[React Native](https://reactnative.dev/) is a framework for creating native mobile apps based on React.
+## What it does
 
-The **Advertising Identifier** ([IDFA](https://developer.apple.com/documentation/adsupport/asidentifiermanager) on iOS, [AAID](https://developer.android.com/training/articles/ad-id) on Android) is a device-specific, unique, resettable ID for advertising that allows developers and marketers to track activity for advertising purposes.
+The [Advertising Identifier](https://developer.apple.com/documentation/adsupport/asidentifiermanager)
+(IDFA on iOS, [AAID](https://developer.android.com/training/articles/ad-id) on Android) is a
+device-specific, resettable ID used for advertising attribution. This module exposes it to React
+Native, respecting OS-level user permission.
 
-This npm module allows any mobile application built with React Native to access the Advertising ID, following the OS specific definition and user permissions.
-
-The module output in the RN framework is the following:
+Both methods return:
 
 ```ts
 interface AdvertisingInfoResponse {
-  id: string; // the Advertising ID (or null if not defined/permitted)
-  isAdTrackingLimited: boolean; // the user defined permission to track
+  id: string | null;       // null if tracking is not permitted
+  isAdTrackingLimited: boolean;
 }
 ```
-
-## Supported platform
-
-- Android
-- iOS
 
 ## Installation
 
-```sh
-npm install @sparkfabrik/react-native-idfa-aaid
+This package is consumed as a GitHub dependency. Add it to your `package.json`:
+
+```json
+"@sparkfabrik/react-native-idfa-aaid": "github:aiir/react-native-idfa-aaid#v1.2.0-aiir.1"
 ```
 
-or
+Then run `npm install` and `pod install` in your `ios` folder.
 
-```sh
-yarn add @sparkfabrik/react-native-idfa-aaid
-```
+## iOS setup
 
-Then run `pod install` in your `ios` folder after installation.
-
-## Usage
-
-### iOS configuration
-
-For `native` apps, in `info.plist` make sure to add:
+Add the tracking usage description to `Info.plist`:
 
 ```xml
 <key>NSUserTrackingUsageDescription</key>
-<string>...</string>
+<string>Your description here</string>
 ```
 
-For `Expo` apps, in `app.json` make sure to add:
-
-```json
-{
-  "expo": {
-    "plugins": [
-      [
-        "expo-tracking-transparency",
-        {
-          "userTrackingPermission": "..."
-        }
-      ]
-    ]
-  }
-}
-```
-
-### React Native components
-
-Example of a basic integration in a RN component.
+## Usage
 
 ```js
 import ReactNativeIdfaAaid, { AdvertisingInfoResponse } from '@sparkfabrik/react-native-idfa-aaid';
 
-const MyComponent: React.FC = () => {
-  const [idfa, setIdfa] = useState<string | null>();
-
-  useEffect(() => {
-    ReactNativeIdfaAaid.getAdvertisingInfo()
-      .then((res: AdvertisingInfoResponse) =>
-        !res.isAdTrackingLimited ? setIdfa(res.id) : setIdfa(null),
-      )
-      .catch((err) => {
-        console.log(err);
-        return setIdfa(null);
-      });
-  }, []);
+useEffect(() => {
+  ReactNativeIdfaAaid.getAdvertisingInfo()
+    .then((res: AdvertisingInfoResponse) => {
+      const id = res.isAdTrackingLimited ? null : res.id;
+    })
+    .catch((err) => console.log(err));
+}, []);
 ```
 
-#### iOS 17.4
+### iOS 17.4 tracking status bug
 
-In order to prevent a bug present in iOS 17.4 we also expose the `getAdvertisingInfoAndCheckAuthorization(check: boolean)` which aims to solve the problem of `ATT Tracking Manager` returning status `denied` even if the ATT modal was not yet displayed to the user.
+iOS 17.4 has a bug where `ATTrackingManager` can return `denied` before the permission
+dialog has been shown. Use `getAdvertisingInfoAndCheckAuthorization(true)` to apply a
+workaround that re-checks when the app becomes active:
 
 ```js
-import ReactNativeIdfaAaid, { AdvertisingInfoResponse } from '@sparkfabrik/react-native-idfa-aaid';
-
-const MyComponent: React.FC = () => {
-  const [idfa, setIdfa] = useState<string | null>();
-
-  useEffect(() => {
-    ReactNativeIdfaAaid.getAdvertisingInfoAndCheckAuthorization(true)
-      .then((res: AdvertisingInfoResponse) =>
-        !res.isAdTrackingLimited ? setIdfa(res.id) : setIdfa(null),
-      )
-      .catch((err) => {
-        console.log(err);
-        return setIdfa(null);
-      });
-  }, []);
+ReactNativeIdfaAaid.getAdvertisingInfoAndCheckAuthorization(true)
+  .then((res: AdvertisingInfoResponse) => {
+    const id = res.isAdTrackingLimited ? null : res.id;
+  })
+  .catch((err) => console.log(err));
 ```
 
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+Pass `false` (or use `getAdvertisingInfo()`) if you do not need the workaround.
 
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE).
