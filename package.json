@@ -1,6 +1,6 @@
 {
   "name": "@sparkfabrik/react-native-idfa-aaid",
-  "version": "1.2.0-aiir.4",
+  "version": "1.2.0-aiir.5",
   "description": "React Native module to get IDFA (iOS) or AAID (Android)",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -24,7 +24,7 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "lint:fix": "eslint --fix \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build",
+    "build": "bob build",
     "release": "release-it",
     "example:setup": "cd example && npm install",
     "example:setup-ios": "cd example && pod install --project-directory=ios",
